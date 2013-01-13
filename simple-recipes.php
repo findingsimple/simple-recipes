@@ -104,12 +104,12 @@ class Simple_Recipes {
 		add_shortcode( 'recipe', array( __CLASS__, 'shortcode_recipe') );
 										
 		add_filter( 'enter_title_here' , __CLASS__ . '::change_default_title' );
+				
+		add_filter("manage_" . self::$post_type_name . "_posts_columns", __CLASS__ . '::manage_columns');
 		
-		add_filter("manage_{self::$post_type_name}_posts_columns", __CLASS__ . '::manage_columns');
+		add_action("manage_" . self::$post_type_name . "_posts_custom_column", __CLASS__ . '::manage_columns_values', 10, 2);
 		
-		add_action("manage_{self::$post_type_name}_posts_custom_column", __CLASS__ . '::manage_columns_values', 10, 2);
-		
-		add_filter("manage_{self::$post_type_name}_posts_custom_column", __CLASS__ . '::manage_columns_values', 10, 2);
+		add_filter("manage_" . self::$post_type_name . "_posts_custom_column", __CLASS__ . '::manage_columns_values', 10, 2);
 						
 	}
 
