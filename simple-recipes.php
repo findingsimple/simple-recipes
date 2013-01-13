@@ -142,7 +142,7 @@ class Simple_Recipes {
 			'hierarchical' => true, //allows use of wp_dropdown_pages
 			'menu_position' => null,
 			'taxonomies' => array(''),
-			'supports' => array( 'title' )
+			'supports' => array( 'title', 'editor', 'thumbnail','revisions', 'excerpt', 'author', 'comments' )
 		); 
 
 		register_post_type( self::$post_type_name , $args );
