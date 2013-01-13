@@ -332,7 +332,7 @@ class Simple_Recipes {
 		wp_nonce_field( basename( __FILE__ ), 'recipe-instructions-nonce' );
 		
 		$instructions = get_post_meta( $object->ID, '_recipe_instructions' , true );
-						
+					
 		wp_editor( $instructions , 'recipe_instructions', array( 'textarea_name' => 'recipe_instructions' ) ); 
  
 	}

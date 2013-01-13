@@ -33,3 +33,5 @@ only screen and (                min-resolution: 1.5dppx) {
 }
 
 #srid { width: 60px; }
+
+body table#recipe_instructions_tbl.mceLayout  { background-color:#fff !important; }
