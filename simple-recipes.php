@@ -585,6 +585,402 @@ class Simple_Recipes {
 		return ( !isset($question) || trim($question)==='' );
 		
 	}
+	
+
+	/**
+	 * Recipe Name
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_name( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_name_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'name',
+			'content' => get_the_title()
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}
+	
+	/**
+	 * Recipe Description
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_description( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_description_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'descripion',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Image
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_image( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_image_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'image',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe URL
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_url( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_url_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'url',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Cooking Method
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_cooking_method( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_cooking_method_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'cookingMethod',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Cook Time
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_cook_time( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_cook_time_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'cookTime',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Ingredients
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_ingredients( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_ingredients_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'ingredients',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Prep Time
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_prep_time( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_prep_time_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'prepTime',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Instructions
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_instructions( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_instructions_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'recipeInstructions',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Yield
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_yield( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_yield_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'recipeYield',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Total Time
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_total_time( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_total_time_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'totalTime',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Recipe Nutrition
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */
+	public static function recipe_nutrition( $args = array() ) {
+
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_nutrition_args', $args );
+		extract( $args, EXTR_SKIP );
+
+		$attributes = array();
+
+		$attributes = array(
+			'itemprop' => 'nutrition',
+			'content' => ''
+		);
+		
+		if ( empty( $attributes ) )
+			return;
+		
+		if ( $echo )
+			echo self::recipe_output( $attributes , $args );
+		else
+			return self::recipe_output( $attributes , $args );
+
+	}	
+	
+	/**
+	 * Format output according to argument
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */	
+	public static function recipe_output( $attributes = array() , $args = array() ) {
+	
+		$args = wp_parse_args( $args, self::$defaults );
+		$args = apply_filters( self::$post_type_name . '_output_args' , $args );
+		extract( $args, EXTR_SKIP );
+	
+		if ( $echo && !empty($attributes) ) {
+		
+			$tag = $args['before'] . '<' . $element . ' ';
+            
+            foreach ($attributes as $attribute => $value) {
+            	
+            	if ( !empty( $value ) ) 
+                	$tag .= $attribute . '="' . $value . '" ';
+            
+            }
+            
+            $tag .= '/>' . $args['after'];
+            
+            return $tag;
+
+		} 
+		
+		return $attributes;
+	
+	}
+
 			
 }
 
