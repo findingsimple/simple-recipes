@@ -230,17 +230,13 @@ class Simple_Recipes {
 
 		global $post_type;
 				
-		if ( is_admin() ) {
-	
-			wp_register_style( 'simple-recipes-admin', self::get_url( '/css/simple-recipes-admin.css', __FILE__ ) , false, '1.0' );
-			wp_enqueue_style( 'simple-recipes' );
-					
-		}
-		
-		if ( is_admin() && ( self::$post_type_name == $post_type ) ) {
+		wp_register_style( 'simple-recipes-admin', self::get_url( '/css/simple-recipes-admin.css', __FILE__ ) , false, '1.0' );
+		wp_enqueue_style( 'simple-recipes-admin' );
+							
+		if ( self::$post_type_name == $post_type ) {
 
 			wp_register_script( 'simple-recipes-admin', self::get_url( '/js/simple-recipes=admin.js', __FILE__ ) , false, '1.0', true );
-			wp_enqueue_script( 'simple-recipes=admin' );		
+			wp_enqueue_script( 'simple-recipes-admin' );		
 		
 		}
 		
