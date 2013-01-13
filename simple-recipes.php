@@ -317,39 +317,23 @@ class Simple_Recipes {
 	 */
 	public static function add_meta_box() {
 	
-		add_meta_box( 'recipe-options', __( 'Options', self::$text_domain  ), array( __CLASS__, 'do_options_meta_box' ), self::$post_type_name , 'side', 'core' );
+		add_meta_box( 'recipe-instructions', __( 'Recipe Instructions', self::$text_domain  ), array( __CLASS__, 'do_recipe_instructions_meta_box' ), self::$post_type_name , 'normal', 'core' );
 		
 	}
 
 	/**
-	 * Output the recipe options meta box HTML
+	 * Output the recipe instructions meta box HTML
 	 *
 	 * @param WP_Post $object Current post object
 	 * @param array $box Metabox information
 	 */
-	public static function do_options_meta_box( $object, $box ) {
+	public static function do_recipe_instructions_meta_box( $object, $box ) {
 	
-		wp_nonce_field( basename( __FILE__ ), 'recipe-meta-none' );
+		wp_nonce_field( basename( __FILE__ ), 'recipe-instructions-nonce' );
 		
-		$options = get_post_meta( $object->ID, '_recipe_options' , true );
+		$instructions = get_post_meta( $object->ID, '_recipe_instructions' , true );
 						
-		$defaults = self::$defaults;
-
-		?>
-			<p>
-				<label for="<?php echo $value['name'] ?>"><?php echo $value['label'] ?>:</label>
-				<br />
-				<input 
-					type="text" 
-					name="<?php echo $value['name'] ?>" 
-					id="<?php echo $value['name'] ?>"
-					value="<?php echo $setting; ?>"
-					size="30" 
-					tabindex="30" 
-					style="width: 99%;" 
-				/>
-			</p>
-			<?php
+		wp_editor( $instructions , 'recipe_instructions', array( 'textarea_name' => 'recipe_instructions' ) ); 
  
 	}
 
@@ -362,28 +346,25 @@ class Simple_Recipes {
 	public static function save_meta( $post_id ) {
 
 		/* Verify the nonce before proceeding. */
-		if ( !isset( $_POST['recipe-meta-nonce'] ) || !wp_verify_nonce( $_POST['recipe-meta-none'], basename( __FILE__ ) ) )
+		if ( !isset( $_POST['recipe-instructions-nonce'] ) || !wp_verify_nonce( $_POST['recipe-instructions-nonce'], basename( __FILE__ ) ) )
 			return $post_id;
 
-		$new_meta_value = array(
-			'recipe_option_x' => $_POST['recipe_option_x'] ,
-			'recipe_option_y' => $_POST['recipe_option_y']
-		);
+		$new_meta_value = $_POST['recipe_instructions'];
 								
 		/* Get the meta value of the custom field key. */
-		$meta_value = get_post_meta( $post_id, '_recipe_options' , true );
+		$meta_value = get_post_meta( $post_id, '_recipe_instructions' , true );
 
 		/* If there is no new meta value but an old value exists, delete it. */
 		if ( '' == $new_meta_value && $meta_value )
-			delete_post_meta( $post_id, '_recipe_options' , $meta_value );
+			delete_post_meta( $post_id, '_recipe_instructions' , $meta_value );
 
 		/* If a new meta value was added and there was no previous value, add it. */
 		elseif ( $new_meta_value && empty( $meta_value ) )
-			add_post_meta( $post_id, '_recipe_options' , $new_meta_value, true );
+			add_post_meta( $post_id, '_recipe_instructions' , $new_meta_value, true );
 
 		/* If the new meta value does not match the old value, update it. */
 		elseif ( $new_meta_value && $new_meta_value != $meta_value )
-			update_post_meta( $post_id, '_recipe_options' , $new_meta_value );
+			update_post_meta( $post_id, '_recipe_instructions' , $new_meta_value );
 	
 	}
 
