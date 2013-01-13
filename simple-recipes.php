@@ -84,9 +84,11 @@ class Simple_Recipes {
 		self::$defaults = apply_filters( 'simple_recipes_defaults', self::$defaults );
 		
 		add_action( 'init', array( __CLASS__, 'register' ) );
-				
+		
 		add_filter( 'post_updated_messages', array( __CLASS__, 'updated_messages' ) );
 		
+		add_action( 'init', array( __CLASS__, 'register_taxonomies' ) );
+						
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_box' ) );
 		
 		add_action( 'save_post', array( __CLASS__, 'save_meta' ), 10, 1 );
@@ -131,6 +133,7 @@ class Simple_Recipes {
 			'not_found_in_trash' => __('No recipes found in Trash', self::$text_domain ),
 			'parent_item_colon' => ''
 		);
+		
 		$args = array(
 			'labels' => $labels,
 			'public' => false,
@@ -144,9 +147,12 @@ class Simple_Recipes {
 			'taxonomies' => array(''),
 			'supports' => array( 'title', 'editor', 'thumbnail','revisions', 'excerpt', 'author', 'comments' )
 		); 
+		
+		$args = apply_filters( self::$post_type_name . '_cpt_args' , $args );
 
 		register_post_type( self::$post_type_name , $args );
-	}
+		
+	}	
 
 	/**
 	 * Filter the "post updated" messages
@@ -175,6 +181,68 @@ class Simple_Recipes {
 		);
 
 		return $messages;
+	}
+	
+	public static function register_taxonomies() {
+
+		/**
+		 * Recipe Category (schema.org recipeCategory) - "The category of the recipe—for example, appetizer, entree, etc."
+		 *
+		 **/
+		$labels = array(
+			'name' => _x( 'Recipe Categories', 'Recipe category taxonomy' ),
+			'singular_name' => _x( 'Category', 'Recipe category taxonomy' ),
+			'search_items' =>  __( 'Search Categories' ),
+			'all_items' => __( 'All Categories' ),
+   			'parent_item' => __( 'Parent Category' ),
+   			'parent_item_colon' => __( 'Parent Category:' ),
+			'edit_item' => __( 'Edit Category' ), 
+			'update_item' => __( 'Update Category' ),
+			'add_new_item' => __( 'Add New Category' ),
+			'new_item_name' => __( 'New Category' ),
+			'menu_name' => __( 'Categories' ),
+		); 	
+		
+		$args = array(
+			'hierarchical' => true,
+			'labels' => $labels,
+			'show_ui' => true,
+			'show_admin_column' => true,
+			'query_var' => true,
+			'rewrite' => array( 'slug' => 'recipe-category' )		
+		);
+		
+		register_taxonomy( self::$post_type_name . '_category' , array( self::$post_type_name ), $args );
+
+		/**
+		 * Recipe Cuisine (schema.org recipeCuisine) - "The cuisine of the recipe (for example, French or Ethopian)."
+		 *
+		 **/
+		$labels = array(
+			'name' => _x( 'Recipe Cuisines', 'Cuisine taxonomy' ),
+			'singular_name' => _x( 'Cuisine', 'Cuisine taxonomy' ),
+			'search_items' =>  __( 'Search Cuisine' ),
+			'all_items' => __( 'All Cuisine' ),
+   			'parent_item' => __( 'Parent Cuisine' ),
+   			'parent_item_colon' => __( 'Parent Cuisine:' ),
+			'edit_item' => __( 'Edit Cuisine' ), 
+			'update_item' => __( 'Update Cuisine' ),
+			'add_new_item' => __( 'Add New Cuisine' ),
+			'new_item_name' => __( 'New Cuisine' ),
+			'menu_name' => __( 'Cuisines' ),
+		); 	
+
+		$args = array(
+			'hierarchical' => false,
+			'labels' => $labels,
+			'show_ui' => true,
+			'show_admin_column' => true,
+			'query_var' => true ,
+			'rewrite' => array( 'slug' => 'cuisine' ),
+		);
+		
+		register_taxonomy( self::$post_type_name . '_cuisine' , array( self::$post_type_name ), $args );
+	
 	}
 	
 	/**
