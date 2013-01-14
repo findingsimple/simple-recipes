@@ -95,6 +95,8 @@ class Simple_Recipes {
 
 		add_action( 'save_post', array( __CLASS__, 'save_nutrition_meta' ), 10, 1 );
 		
+		add_action( 'save_post', array( __CLASS__, 'save_information_meta' ), 10, 1 );
+		
 		add_action( 'init', __CLASS__ . '::register_image_sizes' , 99 );
 				
 		add_action( 'init', array( __CLASS__, 'add_styles_and_scripts') );
@@ -320,6 +322,7 @@ class Simple_Recipes {
 	public static function add_meta_box() {
 	
 		add_meta_box( 'recipe-instructions', __( 'Recipe Instructions', self::$text_domain  ), array( __CLASS__, 'do_recipe_instructions_meta_box' ), self::$post_type_name , 'normal', 'core' );
+		add_meta_box( 'recipe-information', __( 'Recipe Information', self::$text_domain  ), array( __CLASS__, 'do_recipe_information_meta_box' ), self::$post_type_name , 'normal', 'core' );
 		add_meta_box( 'recipe-nutrition', __( 'Recipe Nutrition', self::$text_domain  ), array( __CLASS__, 'do_recipe_nutrition_meta_box' ), self::$post_type_name , 'normal', 'core' );
 
 		
@@ -491,6 +494,74 @@ class Simple_Recipes {
 		/* If the new meta value does not match the old value, update it. */
 		elseif ( $new_meta_value && $new_meta_value != $meta_value )
 			update_post_meta( $post_id, '_recipe_nutrition' , $new_meta_value );
+	
+	}
+	
+	/**
+	 * Output the recipe information meta box HTML
+	 *
+	 * @param WP_Post $object Current post object
+	 * @param array $box Metabox information
+	 */
+	public static function do_recipe_information_meta_box( $object, $box ) {
+	
+		wp_nonce_field( basename( __FILE__ ), 'recipe-information-nonce' );
+		
+		$info = get_post_meta( $object->ID, '_recipe_information' , true );
+											
+		?>
+		<div class="post-settings">
+			<p>
+				<label for="prepTime"><?php _e( 'Prepation Time:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_information[prepTime]" id="prepTime" value="<?php echo esc_attr( $info['prepTime'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="cookTime"><?php _e( 'Cooking Time:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_information[cookTime]" id="cookTime" value="<?php echo esc_attr( $info['cookTime'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="recipeYield"><?php _e( 'Yield:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_information[recipeYield]" id="recipeYield" value="<?php echo esc_attr( $info['recipeYield'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+		</div> 
+		<?php
+	}
+
+	/**
+	 * Save the recipe nutrition metadata / options
+	 *
+	 * @wp-action save_post
+	 * @param int $post_id The ID of the current post being saved.
+	 */
+	public static function save_information_meta( $post_id ) {
+
+		/* Verify the nonce before proceeding. */
+		if ( !isset( $_POST['recipe-information-nonce'] ) || !wp_verify_nonce( $_POST['recipe-information-nonce'], basename( __FILE__ ) ) )
+			return $post_id;
+
+		$new_meta_value = array(
+			'prepTime' => $_POST['recipe_information']['prepTime'],
+			'cookTime' => $_POST['recipe_information']['cookTime'],
+			'recipeYield' => $_POST['recipe_information']['recipeYield']
+		);	
+								
+		/* Get the meta value of the custom field key. */
+		$meta_value = get_post_meta( $post_id, '_recipe_information' , true );
+
+		/* If there is no new meta value but an old value exists, delete it. */
+		if ( '' == $new_meta_value && $meta_value )
+			delete_post_meta( $post_id, '_recipe_information' , $meta_value );
+
+		/* If a new meta value was added and there was no previous value, add it. */
+		elseif ( $new_meta_value && empty( $meta_value ) )
+			add_post_meta( $post_id, '_recipe_information' , $new_meta_value, true );
+
+		/* If the new meta value does not match the old value, update it. */
+		elseif ( $new_meta_value && $new_meta_value != $meta_value )
+			update_post_meta( $post_id, '_recipe_information' , $new_meta_value );
 	
 	}
 
