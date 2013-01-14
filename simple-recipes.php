@@ -91,7 +91,9 @@ class Simple_Recipes {
 						
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_box' ) );
 		
-		add_action( 'save_post', array( __CLASS__, 'save_meta' ), 10, 1 );
+		add_action( 'save_post', array( __CLASS__, 'save_instruction_meta' ), 10, 1 );
+
+		add_action( 'save_post', array( __CLASS__, 'save_nutrition_meta' ), 10, 1 );
 		
 		add_action( 'init', __CLASS__ . '::register_image_sizes' , 99 );
 				
@@ -318,6 +320,8 @@ class Simple_Recipes {
 	public static function add_meta_box() {
 	
 		add_meta_box( 'recipe-instructions', __( 'Recipe Instructions', self::$text_domain  ), array( __CLASS__, 'do_recipe_instructions_meta_box' ), self::$post_type_name , 'normal', 'core' );
+		add_meta_box( 'recipe-nutrition', __( 'Recipe Nutrition', self::$text_domain  ), array( __CLASS__, 'do_recipe_nutrition_meta_box' ), self::$post_type_name , 'normal', 'core' );
+
 		
 	}
 
@@ -338,12 +342,12 @@ class Simple_Recipes {
 	}
 
 	/**
-	 * Save the recipe metadata / options
+	 * Save the recipe instructions
 	 *
 	 * @wp-action save_post
 	 * @param int $post_id The ID of the current post being saved.
 	 */
-	public static function save_meta( $post_id ) {
+	public static function save_instruction_meta( $post_id ) {
 
 		/* Verify the nonce before proceeding. */
 		if ( !isset( $_POST['recipe-instructions-nonce'] ) || !wp_verify_nonce( $_POST['recipe-instructions-nonce'], basename( __FILE__ ) ) )
@@ -368,6 +372,127 @@ class Simple_Recipes {
 	
 	}
 
+	/**
+	 * Output the recipe nutrition meta box HTML
+	 *
+	 * @param WP_Post $object Current post object
+	 * @param array $box Metabox information
+	 */
+	public static function do_recipe_nutrition_meta_box( $object, $box ) {
+	
+		wp_nonce_field( basename( __FILE__ ), 'recipe-nutrition-nonce' );
+		
+		$nutrition = get_post_meta( $object->ID, '_recipe_nutrition' , true );
+									
+		?>
+		<div class="post-settings">
+			<p>
+				<label for="servingSize"><?php _e( 'Serving Size:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[servingSize]" id="servingSize" value="<?php echo esc_attr( $nutrition['servingSize'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="calories"><?php _e( 'Calories:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[calories]" id="calories" value="<?php echo esc_attr( $nutrition['calories'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="carbohydrateContent"><?php _e( 'Carbohydrates:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[carbohydrateContent]" id="carbohydrateContent" value="<?php echo esc_attr( $nutrition['carbohydrateContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="cholesterolContent"><?php _e( 'Cholesterol:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[cholesterolContent]" id="cholesterolContent" value="<?php echo esc_attr( $nutrition['cholesterolContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="fibreContent"><?php _e( 'Fibre:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[fibreContent]" id="fibreContent" value="<?php echo esc_attr( $nutrition['fibreContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="proteinContent"><?php _e( 'Protein:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[proteinContent]" id="proteinContent" value="<?php echo esc_attr( $nutrition['proteinContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="sodiumContent"><?php _e( 'Sodium:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[sodiumContent]" id="sodiumContent" value="<?php echo esc_attr( $nutrition['sodiumContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="sugarContent"><?php _e( 'Sugar:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[sugarContent]" id="sugarContent" value="<?php echo esc_attr( $nutrition['sugarContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>	
+			<p>
+				<label for="fatContent"><?php _e( 'Fat:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[fatContent]" id="fatContent" value="<?php echo esc_attr( $nutrition['fatContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>
+			<p>
+				<label for="saturatedFatContent"><?php _e( 'Saturated Fat:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[saturatedFatContent]" id="saturatedFatContent" value="<?php echo esc_attr( $nutrition['saturatedFatContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>	
+			<p>
+				<label for="transFatContent"><?php _e( 'Trans Fat:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[transFatContent]" id="transFatContent" value="<?php echo esc_attr( $nutrition['transFatContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>	
+			<p>
+				<label for="unsaturatedFatContent"><?php _e( 'Unsaturated Fat:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="recipe_nutrition[unsaturatedFatContent]" id="unsaturatedFatContent" value="<?php echo esc_attr( $nutrition['unsaturatedFatContent'] ); ?>" size="30" tabindex="30" style="width: 99%;" />
+			</p>	
+		</div> 
+		<?php
+	}
+
+	/**
+	 * Save the recipe nutrition metadata / options
+	 *
+	 * @wp-action save_post
+	 * @param int $post_id The ID of the current post being saved.
+	 */
+	public static function save_nutrition_meta( $post_id ) {
+
+		/* Verify the nonce before proceeding. */
+		if ( !isset( $_POST['recipe-nutrition-nonce'] ) || !wp_verify_nonce( $_POST['recipe-nutrition-nonce'], basename( __FILE__ ) ) )
+			return $post_id;
+
+		$new_meta_value = array(
+			'calories' => $_POST['recipe_nutrition']['calories'],
+			'carbohydrateContent' => $_POST['recipe_nutrition']['carbohydrateContent'],
+			'cholesterolContent' => $_POST['recipe_nutrition']['cholesterolContent'],
+			'fatContent' => $_POST['recipe_nutrition']['fatContent'],
+			'fiberContent' => $_POST['recipe_nutrition']['fiberContent'],
+			'proteinContent' => $_POST['recipe_nutrition']['proteinContent'],
+			'saturatedFatContent' => $_POST['recipe_nutrition']['saturatedFatContent'],
+			'servingSize' => $_POST['recipe_nutrition']['servingSize'],
+			'sodiumContent' => $_POST['recipe_nutrition']['sodiumContent'],
+			'sugarContent' => $_POST['recipe_nutrition']['sugarContent'],
+			'transFatContent' => $_POST['recipe_nutrition']['transFatContent'],
+			'unsaturatedFatContent' => $_POST['recipe_nutrition']['unsaturatedFatContent']
+		);	
+								
+		/* Get the meta value of the custom field key. */
+		$meta_value = get_post_meta( $post_id, '_recipe_nutrition' , true );
+
+		/* If there is no new meta value but an old value exists, delete it. */
+		if ( '' == $new_meta_value && $meta_value )
+			delete_post_meta( $post_id, '_recipe_nutrition' , $meta_value );
+
+		/* If a new meta value was added and there was no previous value, add it. */
+		elseif ( $new_meta_value && empty( $meta_value ) )
+			add_post_meta( $post_id, '_recipe_nutrition' , $new_meta_value, true );
+
+		/* If the new meta value does not match the old value, update it. */
+		elseif ( $new_meta_value && $new_meta_value != $meta_value )
+			update_post_meta( $post_id, '_recipe_nutrition' , $new_meta_value );
+	
+	}
 
 	/**
 	 * Register admin thumbnail size
