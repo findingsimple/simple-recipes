@@ -97,6 +97,8 @@ class Simple_Recipes {
 		
 		add_action( 'save_post', array( __CLASS__, 'save_information_meta' ), 10, 1 );
 		
+		add_action( 'save_post', array( __CLASS__, 'save_ingredients_meta' ), 10, 1 );
+		
 		add_action( 'init', __CLASS__ . '::register_image_sizes' , 99 );
 				
 		add_action( 'init', array( __CLASS__, 'add_styles_and_scripts') );
@@ -307,7 +309,7 @@ class Simple_Recipes {
 							
 		if ( self::$post_type_name == $post_type ) {
 
-			wp_register_script( 'simple-recipes-admin', self::get_url( '/js/simple-recipes=admin.js', __FILE__ ) , false, '1.0', true );
+			wp_register_script( 'simple-recipes-admin', self::get_url( '/js/simple-recipes-admin.js', __FILE__ ) , false, '1.0', true );
 			wp_enqueue_script( 'simple-recipes-admin' );		
 		
 		}
@@ -320,11 +322,11 @@ class Simple_Recipes {
 	 * @wp-action add_meta_boxes
 	 */
 	public static function add_meta_box() {
-	
-		add_meta_box( 'recipe-instructions', __( 'Recipe Instructions', self::$text_domain  ), array( __CLASS__, 'do_recipe_instructions_meta_box' ), self::$post_type_name , 'normal', 'core' );
-		add_meta_box( 'recipe-information', __( 'Recipe Information', self::$text_domain  ), array( __CLASS__, 'do_recipe_information_meta_box' ), self::$post_type_name , 'normal', 'core' );
-		add_meta_box( 'recipe-nutrition', __( 'Recipe Nutrition', self::$text_domain  ), array( __CLASS__, 'do_recipe_nutrition_meta_box' ), self::$post_type_name , 'normal', 'core' );
 
+		add_meta_box( 'recipe-ingredients', __( 'Recipe Ingredients', self::$text_domain  ), array( __CLASS__, 'do_recipe_ingredients_meta_box' ), self::$post_type_name , 'normal', 'core' );	
+		add_meta_box( 'recipe-information', __( 'Recipe Information', self::$text_domain  ), array( __CLASS__, 'do_recipe_information_meta_box' ), self::$post_type_name , 'normal', 'core' );
+		add_meta_box( 'recipe-instructions', __( 'Recipe Instructions', self::$text_domain  ), array( __CLASS__, 'do_recipe_instructions_meta_box' ), self::$post_type_name , 'normal', 'core' );
+		add_meta_box( 'recipe-nutrition', __( 'Recipe Nutrition', self::$text_domain  ), array( __CLASS__, 'do_recipe_nutrition_meta_box' ), self::$post_type_name , 'normal', 'core' );
 		
 	}
 
@@ -569,6 +571,141 @@ class Simple_Recipes {
 		}
 		
 	}
+	
+	/**
+	 * Output the ingredients meta box HTML
+	 *
+	 * @param WP_Post $object Current post object
+	 * @param array $box Metabox information
+	 */
+	public static function do_recipe_ingredients_meta_box( $object, $box ) {
+	
+		global $post;
+
+		wp_nonce_field( basename( __FILE__ ), 'recipe-ingredients-nonce' );
+								
+		$ingredients_count = get_post_meta( $post->ID, '_recipe_ingredients_count' , true ); 
+												 														
+?>		
+				
+		<a href="#" class="add_ingredient">Add Ingredient <span class="ui-icon ui-icon-circle-plus"></span></a>
+		
+		<div class="wrap">
+		
+			<ul id="ingredients_wrap">
+	
+				<?php if ( empty( $ingredients_count ) || $ingredients_count == 0 ) { ?>
+				
+				<li class="ingredient clearfix" id="ingredient-0" >
+					<span class="handle ui-icon ui-icon-carat-2-n-s">handle</span>
+					<div>
+						<label for="recipe_ingredient_0" style="display:none;" >Ingredient:</label>
+						<input type="text" id="recipe_ingredient_0" name="recipe_ingredient[0]" value="" size="30" tabindex="30" />
+					</div>
+					<a href="#" class="remove_ingredient ui-icon ui-icon-circle-minus" title="Remove" >Remove</a>
+				</li>
+				
+				<?php } else { ?>		
+	
+				<?php for ( $count = 0; $count <= $ingredients_count-1; $count++ ) : ?>
+				
+				<?php $ingredient = get_post_meta( $post->ID, '_recipe_ingredient_' . $count , true ); ?>
+				
+				<li class="ingredient clearfix" id="ingredient-<?php echo $count; ?>" >
+					<span class="handle ui-icon ui-icon-carat-2-n-s">handle</span>
+					<div>
+						<label for="recipe_ingredient_<?php echo $count; ?>" style="display:none;">Ingredient:</label>
+						<input type="text" id="recipe_ingredient_<?php echo $count; ?>" name="recipe_ingredient[<?php echo $count; ?>]" value="<?php echo esc_attr( $ingredient ); ?>" size="30" tabindex="30" />
+					</div>			
+					<a href="#" class="remove_ingredient ui-icon ui-icon-circle-minus" title="Remove" >Remove</a>
+				</li>
+				
+				<?php endfor; ?>			
+				
+				<?php } ?>
+				
+			</ul>
+		
+		</div>
+				
+<?php
+	}	
+	
+	/**
+	 * Save the recipe ingredients metadata
+	 *
+	 * @wp-action save_post
+	 * @param int $post_id The ID of the current post being saved.
+	 */
+	public static function save_ingredients_meta( $post_id ) {
+
+		/* Verify the nonce before proceeding. */
+		if ( !isset( $_POST['recipe-ingredients-nonce'] ) || !wp_verify_nonce( $_POST['recipe-ingredients-nonce'], basename( __FILE__ ) ) )
+			return $post_id;
+			
+		$count = 0;	
+						
+		foreach ( $_POST[ 'recipe_ingredient' ] as $ingredient ) {
+				
+			$new_meta_value = $ingredient;
+			
+			/* Get the meta value of the custom field key. */
+			$meta_value = get_post_meta( $post_id, '_recipe_ingredient_' . $count , true );
+
+			/* If there is no new meta value but an old value exists, delete it. */
+			if ( '' == $new_meta_value && $meta_value )
+				delete_post_meta( $post_id, '_recipe_ingredient_' . $count , $meta_value );
+
+			/* If a new meta value was added and there was no previous value, add it. */
+			elseif ( $new_meta_value && '' == $meta_value )
+				add_post_meta( $post_id, '_recipe_ingredient_' . $count , $new_meta_value , true );
+
+			/* If the new meta value does not match the old value, update it. */
+			elseif ( $new_meta_value && $new_meta_value != $meta_value )
+				update_post_meta( $post_id, '_recipe_ingredient_' . $count , $new_meta_value );
+				
+			$count++;
+							
+		}
+		
+		/* If less ingredients than previous - delete the ones that have been removed */
+		
+		$existing_count = get_post_meta( $post_id, '_recipe_ingredients_count' , true );
+		
+		$count_temp = $count; // so that the actual count doesn't get incremented
+
+		if ( !empty( $count_temp )  && $count_temp < $existing_count ) {
+
+			for ( $count_temp; $count_temp <= $existing_count; $count_temp++ ) {
+			
+				delete_post_meta( $post_id, '_recipe_ingredient_' . $count_temp );
+
+			}
+
+		}
+
+						
+		// Save the recipent ingredients count				
+		if ( !empty( $count )  && $count > 0 ) {
+
+			/* Get the current count. */
+			$meta_value = get_post_meta( $post_id, '_recipe_ingredients_count' , true );
+
+			/* If there is no new meta value but an old value exists, delete it. */
+			if ( '' == $count && $meta_value )
+				delete_post_meta( $post_id, '_recipe_ingredients_count', $meta_value );
+
+			/* If a new meta value was added and there was no previous value, add it. */
+			elseif ( $count && '' == $meta_value )
+				add_post_meta( $post_id, '_recipe_ingredients_count' , $count , true );
+
+			/* If the new meta value does not match the old value, update it. */
+			elseif ( $count && $count != $meta_value )
+				update_post_meta( $post_id, '_recipe_ingredients_count' , $count );
+		
+		}
+		
+	}	
 
 	/**
 	 * Register admin thumbnail size
