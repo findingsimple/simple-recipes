@@ -45,9 +45,10 @@ body table#recipe_instructions_tbl.mceLayout  { background-color:#fff !important
 /**
  * Add Ingredient Meta Box
  */	
-.ingredients_wrap .clearfix { *zoom: 1; }
-.ingredients_wrap .clearfix:before, .clearfix:after { display: table; content: ""; line-height: 0; }
-.ingredients_wrap .clearfix:after { clear: both; }
+.clearfix { *zoom: 1; }
+.clearfix:before, .clearfix:after { display: table; content: ""; line-height: 0; }
+.clearfix:after { clear: both; }
+
 .add_ingredient span { float: left; margin-right: 5px; }
 .ingredient { padding-top: 9px; margin-bottom: 10px; border-top: 1px solid #e1e1e1; }
 .handle { float: left; margin-right: 15px; cursor: move; }

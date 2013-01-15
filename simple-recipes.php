@@ -142,11 +142,11 @@ class Simple_Recipes {
 		
 		$args = array(
 			'labels' => $labels,
-			'public' => false,
+			'public' => true,
 			'show_ui' => true, 
 			'query_var' => true,
-			'has_archive' => false,
-			'rewrite' => false,
+			'has_archive' => true,
+			'rewrite' => array( 'slug' => 'recipes', 'with_front' => false ),
 			'capability_type' => 'post',
 			'hierarchical' => true, //allows use of wp_dropdown_pages
 			'menu_position' => null,
@@ -1300,6 +1300,34 @@ class Simple_Recipes {
 	
 	}
 
+	//create duration output -> http://stackoverflow.com/questions/13301142/php-how-to-convert-string-duration-to-iso-8601-duration-format-ie-30-minute
+	public static function time_to_iso8601_duration($time) {
+		$units = array(
+			"Y" => 365*24*3600,
+			"D" =>     24*3600,
+			"H" =>        3600,
+			"M" =>          60,
+			"S" =>           1,
+		);
+	
+		$str = "P";
+		$istime = false;
+	
+		foreach ($units as $unitName => &$unit) {
+			$quot  = intval($time / $unit);
+			$time -= $quot * $unit;
+			$unit  = $quot;
+			if ($unit > 0) {
+				if (!$istime && in_array($unitName, array("H", "M", "S"))) { // There may be a better way to do this
+					$str .= "T";
+					$istime = true;
+				}
+				$str .= strval($unit) . $unitName;
+			}
+		}
+	
+		return $str;
+	}
 			
 }
 
