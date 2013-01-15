@@ -1,5 +1,6 @@
 var count = ( jQuery('.ingredient').length );
 
+//Bind on page load to initial elements
 jQuery('.add_ingredient').on('click', addIngredient );
 jQuery('.remove_ingredient').on('click', removeIngredient );
 
