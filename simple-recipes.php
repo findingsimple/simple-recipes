@@ -1328,6 +1328,43 @@ class Simple_Recipes {
 	
 		return $str;
 	}
+
+	/**
+	 * Check for General Recipe Information
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */	
+	public static function recipe_information_exist( $id = '' ) {
+	
+		$exists = false;
+	
+		if ( empty( $id ) ) {
+			global $post;
+			$id = $post->ID;
+		}
+
+		$recipe_info = array(
+			'prepTime',
+			'cookTime',
+			'recipeYield'
+		);	
+		
+		foreach ( $recipe_info as $info	) {
+		
+			$existing_info = get_post_meta( $id, '_recipe_information_' . $info , true );
+			
+			if ( !empty( $existing_info ) ) {
+				$exists = true;
+				break;	
+			}
+				
+		}	
+		
+		return $exists;
+		
+	}
 	
 	/**
 	 * Check for Nutritional Information
