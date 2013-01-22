@@ -1500,6 +1500,31 @@ class Simple_Recipes {
 		return $exists;
 		
 	}
+
+	/**
+	 * Check id recipe download file exists
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */	
+	public static function recipe_download_exist( $id = '' ) {
+	
+		$exists = false;
+	
+		if ( empty( $id ) ) {
+			global $post;
+			$id = $post->ID;
+		}
+
+		$download = get_post_meta( $id, '_recipe_downloadRecipe', true );
+				
+		if ( !empty( $ingredient_one ) )
+			$exists = true;
+
+		return $exists;
+		
+	}
 			
 }
 
