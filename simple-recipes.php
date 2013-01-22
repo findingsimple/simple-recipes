@@ -1336,7 +1336,7 @@ class Simple_Recipes {
 	 * @package Simple Recipes
 	 * @since 1.0
 	 */	
-	public static function nutrition_info_exists( $id = '' ) {
+	public static function recipe_nutritional_info_exist( $id = '' ) {
 	
 		$exists = false;
 	
