@@ -1362,7 +1362,7 @@ class Simple_Recipes {
 		
 		foreach ( $nutrition_info as $nutrition	) {
 		
-			$existing_nutrition = get_post_meta( $post->ID, '_recipe_nutrition_' . $nutrition , true );
+			$existing_nutrition = get_post_meta( $id, '_recipe_nutrition_' . $nutrition , true );
 			
 			if ( !empty( $existing_nutrition ) ) {
 				$exists = true;
@@ -1371,6 +1371,33 @@ class Simple_Recipes {
 				
 		}	
 		
+		return $exists;
+		
+	}
+	
+	/**
+	 * Check for Ingredients
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */	
+	public static function recipe_ingredients_exist( $id = '' ) {
+	
+		$exists = false;
+	
+		if ( empty( $id ) ) {
+			global $post;
+			$id = $post->ID;
+		}
+
+		$ingredients_count = get_post_meta( $id, '_recipe_ingredients_count', true );
+				
+		$ingredient_one = get_post_meta( $post->ID, '_recipe_ingredient_0' , true );
+
+		if ( ( $ingredients_count >= 1 ) && !empty( $ingredient_one ) )
+			$exists = true;
+
 		return $exists;
 		
 	}
