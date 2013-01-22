@@ -99,6 +99,8 @@ class Simple_Recipes {
 		
 		add_action( 'save_post', array( __CLASS__, 'save_ingredients_meta' ), 10, 1 );
 		
+		add_action( 'save_post', array( __CLASS__, 'save_download_meta' ), 10, 1 );
+		
 		add_action( 'init', __CLASS__ . '::register_image_sizes' , 99 );
 				
 		add_action( 'init', array( __CLASS__, 'add_styles_and_scripts') );
@@ -327,6 +329,7 @@ class Simple_Recipes {
 		add_meta_box( 'recipe-information', __( 'Recipe Information', self::$text_domain  ), array( __CLASS__, 'do_recipe_information_meta_box' ), self::$post_type_name , 'normal', 'core' );
 		add_meta_box( 'recipe-instructions', __( 'Recipe Instructions', self::$text_domain  ), array( __CLASS__, 'do_recipe_instructions_meta_box' ), self::$post_type_name , 'normal', 'core' );
 		add_meta_box( 'recipe-nutrition', __( 'Recipe Nutrition', self::$text_domain  ), array( __CLASS__, 'do_recipe_nutrition_meta_box' ), self::$post_type_name , 'normal', 'core' );
+		add_meta_box( 'recipe-download', __( 'Download Recipe File', self::$text_domain  ), array( __CLASS__, 'do_recipe_download_meta_box' ), self::$post_type_name , 'normal', 'core' );
 		
 	}
 
@@ -706,6 +709,65 @@ class Simple_Recipes {
 		}
 		
 	}	
+	
+	/**
+	 * Output the downlaod recipe meta box HTML
+	 *
+	 * @param WP_Post $object Current post object
+	 * @param array $box Metabox information
+	 */
+	public static function do_recipe_download_meta_box( $object, $box ) {
+	
+		wp_nonce_field( basename( __FILE__ ), 'recipe-download-nonce' );
+													
+		?>
+		<div class="post-settings">
+			<p class="uploader" id="download_recipe" >
+				<label for="downloadRecipe"><?php _e( 'Download Recipe File:', Simple_Recipes::$text_domain ); ?></label>
+				<br />
+				<input type="text" name="downloadRecipe" id="downloadRecipe" value="<?php echo esc_attr( get_post_meta( $object->ID, '_recipe_downloadRecipe', true ) ); ?>" size="30" tabindex="30" style="width: 50%;" />
+				<input type="button" class="button" name="recipe_download_button" value="Upload/Edit Recipe Download File" data-uploader_title="Select Recipe File" />
+			</p>
+		</div> 
+		<?php
+	}
+	
+	/**
+	 * Save the recipe download meta
+	 *
+	 * @wp-action save_post
+	 * @param int $post_id The ID of the current post being saved.
+	 */
+	public static function save_download_meta( $post_id ) {
+
+		/* Verify the nonce before proceeding. */
+		if ( !isset( $_POST['recipe-download-nonce'] ) || !wp_verify_nonce( $_POST['recipe-download-nonce'], basename( __FILE__ ) ) )
+			return $post_id;
+
+		$meta = array(
+			'downloadRecipe' => $_POST['downloadRecipe']
+		);	
+
+		foreach ( $meta as $meta_key => $new_meta_value ) {
+								
+			/* Get the meta value of the custom field key. */
+			$meta_value = get_post_meta( $post_id, '_recipe_' . $meta_key , true );
+	
+			/* If there is no new meta value but an old value exists, delete it. */
+			if ( '' == $new_meta_value && $meta_value )
+				delete_post_meta( $post_id, '_recipe_' . $meta_key , $meta_value );
+	
+			/* If a new meta value was added and there was no previous value, add it. */
+			elseif ( $new_meta_value && empty( $meta_value ) )
+				add_post_meta( $post_id, '_recipe_' . $meta_key , $new_meta_value, true );
+	
+			/* If the new meta value does not match the old value, update it. */
+			elseif ( $new_meta_value && $new_meta_value != $meta_value )
+				update_post_meta( $post_id, '_recipe_' . $meta_key , $new_meta_value );
+		
+		}
+		
+	}
 
 	/**
 	 * Register admin thumbnail size

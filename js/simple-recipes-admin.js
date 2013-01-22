@@ -1,8 +1,50 @@
+var file_frame = new Array();
+
 var count = ( jQuery('.ingredient').length );
 
 //Bind on page load to initial elements
+jQuery('.uploader .button').on('click', addMedia );
 jQuery('.add_ingredient').on('click', addIngredient );
 jQuery('.remove_ingredient').on('click', removeIngredient );
+
+function addMedia( event ){
+
+	var button = jQuery(this);
+
+	var id = button.parent('.uploader').attr('id');;
+
+	event.preventDefault();
+	
+	// If the media frame already exists, reopen it.
+	if ( file_frame[id] ) {
+		file_frame[id].open();
+		return;
+	}
+				
+	// Create the media frame.
+	file_frame[id] = wp.media.frames.file_frame = wp.media({
+		title: jQuery( this ).data( 'uploader_title' ),
+		button: { text: jQuery( this ).data( 'uploader_button_text' ), },
+		multiple: false  // Set to true to allow multiple files to be selected
+	});
+										
+	// When an image is selected, run a callback.
+	file_frame[id].on( 'select', function() {
+				
+		// We set multiple to false so only get one image from the uploader
+		attachment = file_frame[id].state().get('selection').first().toJSON();
+					
+		// Do something with attachment.id and/or attachment.url here
+		//button.parent('.uploader').find('#downloadRecipeID').val( attachment.id );
+		button.parent('.uploader').find('#downloadRecipe').val( attachment.url );
+
+	});
+	
+	// Finally, open the modal
+	file_frame[id].open();
+
+}	
+
 
 function addIngredient(){
 
