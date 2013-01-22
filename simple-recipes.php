@@ -1328,6 +1328,52 @@ class Simple_Recipes {
 	
 		return $str;
 	}
+	
+	/**
+	 * Check for Nutritional Information
+	 *
+	 * @author Jason Conroy <jason@findingsimple.com>
+	 * @package Simple Recipes
+	 * @since 1.0
+	 */	
+	public static function nutrition_info_exists( $id = '' ) {
+	
+		$exists = false;
+	
+		if ( empty( $id ) ) {
+			global $post;
+			$id = $post->ID;
+		}
+
+		$nutrition_info = array(
+			'calories',
+			'carbohydrateContent',
+			'cholesterolContent',
+			'fatContent',
+			'fiberContent',
+			'proteinContent',
+			'saturatedFatContent',
+			'servingSize',
+			'sodiumContent',
+			'sugarContent',
+			'transFatContent',
+			'unsaturatedFatContent'
+		);	
+		
+		foreach ( $nutrition_info as $nutrition	) {
+		
+			$existing_nutrition = get_post_meta( $post->ID, '_recipe_nutrition_' . $nutrition , true );
+			
+			if ( !empty( $existing_nutrition ) ) {
+				$exists = true;
+				break;	
+			}
+				
+		}	
+		
+		return $exists;
+		
+	}
 			
 }
 
