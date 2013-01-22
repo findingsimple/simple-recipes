@@ -1519,7 +1519,7 @@ class Simple_Recipes {
 
 		$download = get_post_meta( $id, '_recipe_downloadRecipe', true );
 				
-		if ( !empty( $ingredient_one ) )
+		if ( !empty( $download ) )
 			$exists = true;
 
 		return $exists;
