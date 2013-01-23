@@ -589,45 +589,47 @@ class Simple_Recipes {
 								
 		$ingredients_count = get_post_meta( $post->ID, '_recipe_ingredients_count' , true ); 
 												 														
-?>		
+?>		<div class="ingredient_manager">
 				
-		<a href="#" class="add_ingredient">Add Ingredient <span class="ui-icon ui-icon-circle-plus"></span></a>
+			<a href="#" class="add_ingredient">Add Ingredient <span class="ui-icon ui-icon-circle-plus"></span></a>
+			
+			<div class="wrap">
+			
+				<ul id="ingredients_wrap">
 		
-		<div class="wrap">
+					<?php if ( empty( $ingredients_count ) || $ingredients_count == 0 ) { ?>
+					
+					<li class="ingredient clearfix" id="ingredient-0" >
+						<span class="handle ui-icon ui-icon-carat-2-n-s">handle</span>
+						<div>
+							<label for="recipe_ingredient_0" style="display:none;" >Ingredient:</label>
+							<input type="text" id="recipe_ingredient_0" name="recipe_ingredient[0]" value="" size="30" tabindex="30" />
+						</div>
+						<a href="#" class="remove_ingredient ui-icon ui-icon-circle-minus" title="Remove" >Remove</a>
+					</li>
+					
+					<?php } else { ?>		
 		
-			<ul id="ingredients_wrap">
-	
-				<?php if ( empty( $ingredients_count ) || $ingredients_count == 0 ) { ?>
-				
-				<li class="ingredient clearfix" id="ingredient-0" >
-					<span class="handle ui-icon ui-icon-carat-2-n-s">handle</span>
-					<div>
-						<label for="recipe_ingredient_0" style="display:none;" >Ingredient:</label>
-						<input type="text" id="recipe_ingredient_0" name="recipe_ingredient[0]" value="" size="30" tabindex="30" />
-					</div>
-					<a href="#" class="remove_ingredient ui-icon ui-icon-circle-minus" title="Remove" >Remove</a>
-				</li>
-				
-				<?php } else { ?>		
-	
-				<?php for ( $count = 0; $count <= $ingredients_count-1; $count++ ) : ?>
-				
-				<?php $ingredient = get_post_meta( $post->ID, '_recipe_ingredient_' . $count , true ); ?>
-				
-				<li class="ingredient clearfix" id="ingredient-<?php echo $count; ?>" >
-					<span class="handle ui-icon ui-icon-carat-2-n-s">handle</span>
-					<div>
-						<label for="recipe_ingredient_<?php echo $count; ?>" style="display:none;">Ingredient:</label>
-						<input type="text" id="recipe_ingredient_<?php echo $count; ?>" name="recipe_ingredient[<?php echo $count; ?>]" value="<?php echo esc_attr( $ingredient ); ?>" size="30" tabindex="30" />
-					</div>			
-					<a href="#" class="remove_ingredient ui-icon ui-icon-circle-minus" title="Remove" >Remove</a>
-				</li>
-				
-				<?php endfor; ?>			
-				
-				<?php } ?>
-				
-			</ul>
+					<?php for ( $count = 0; $count <= $ingredients_count-1; $count++ ) : ?>
+					
+					<?php $ingredient = get_post_meta( $post->ID, '_recipe_ingredient_' . $count , true ); ?>
+					
+					<li class="ingredient clearfix" id="ingredient-<?php echo $count; ?>" >
+						<span class="handle ui-icon ui-icon-carat-2-n-s">handle</span>
+						<div>
+							<label for="recipe_ingredient_<?php echo $count; ?>" style="display:none;">Ingredient:</label>
+							<input type="text" id="recipe_ingredient_<?php echo $count; ?>" name="recipe_ingredient[<?php echo $count; ?>]" value="<?php echo esc_attr( $ingredient ); ?>" size="30" tabindex="30" />
+						</div>			
+						<a href="#" class="remove_ingredient ui-icon ui-icon-circle-minus" title="Remove" >Remove</a>
+					</li>
+					
+					<?php endfor; ?>			
+					
+					<?php } ?>
+					
+				</ul>
+			
+			</div>
 		
 		</div>
 				
