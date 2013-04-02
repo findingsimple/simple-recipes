@@ -291,7 +291,7 @@ class Simple_Recipes {
 				//stuff here
 							
 			//if ( get_option('simple_recipes_toggle_css_include') != 1 )
-				wp_enqueue_style( 'simple-recipes', self::get_url( '/css/simple-recipes.css', __FILE__ ) );
+			//	wp_enqueue_style( 'simple-recipes', self::get_url( '/css/simple-recipes.css', __FILE__ ) );
 		
 		}
 		
