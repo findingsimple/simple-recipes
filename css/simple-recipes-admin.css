@@ -1,4 +1,7 @@
 /* Admin Menu - 16px */
+#menu-posts-simple_recipe a div:before {
+    content: none!important;
+}
 #menu-posts-simple_recipe .wp-menu-image {
     background: url('../img/icon-adminmenu16-sprite.png') no-repeat 6px 6px !important;
 }
